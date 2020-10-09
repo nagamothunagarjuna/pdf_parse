@@ -15,15 +15,21 @@ async function getpdfData(dataBuffer){
     pdf(dataBuffer).then(function(data) {
         const result = data.text;   
         headings.forEach(function(item, index) {
-            item.value = getParsedValue(result, item.first, item.last);
+            item.value = getParsedValue(result, item.first, item.last, item.final);
             console.log(item);
         })
     });
 }
 
-function getParsedValue(result, first, last) {
-    if((result.indexOf(first) != -1) && (result.indexOf(last) != -1)){
+function getParsedValue(result, first, last, final) {
+	if(result.indexOf(first) == -1){
+        return null;
+	}
+    else if((result.indexOf(first) != -1) && (result.indexOf(last) != -1)){
         return result.substring(result.indexOf(first)+first.length, result.indexOf(last)).replace("\n", "").replace(new RegExp("\n", 'g'), " ");
+    }
+    else if(final != null){
+    	return result.substring(result.indexOf(first)+first.length, result.indexOf(final)).replace("\n", "").replace(new RegExp("\n", 'g'), " ");
     }
     else {
         return null;
